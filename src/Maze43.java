@@ -1,85 +1,88 @@
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Scanner;
-import java.util.Stack;
+import java.util.ArrayList;
+        import java.util.List;
+        import java.util.Scanner;
+        import java.util.Stack;
 
 public class Maze43 {
-    public static void fun(int[][] map,int m,int n){
-        int[][] visit = new int[m][n];
-        int[][] dir = {{1, 0}, {0, 1}};
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
 
-        int max=0;
-        Stack<Node> queue = new Stack<Node>();
+        while (scanner.hasNext()){
+            int row = scanner.nextInt();
+            int column = scanner.nextInt();
 
-        Stack<Node> st = new Stack<Node>();
-        Node in = new Node(0,0);
-        st.push(in);
-        while(st.size()>0){
-            Node top = st.peek();
-            if(top.x==m-1&&top.y==n-1){
-                //记录一条路径
-                if(max<st.size()){
-                    max=st.size();
-                    queue.clear();
-                    Queue<Node> temp = new LinkedList<Node>();
-                    while(st.size()>0){
-                        temp.offer(st.peek());
-                        queue.push(st.pop());
-                    }
-                    while(temp.size()>0){
-                        st.push(temp.poll());
-                    }
-                }
-                st.pop();
-            }
-            else{
-                Node n1 = new Node(top.x+dir[0][0],top.y+dir[0][1]);
-                Node n2 = new Node(top.x+dir[1][0],top.y+dir[1][1]);
-                boolean tag=false;
-                if(n1.x<m&&n1.y<n&&map[n1.x][n1.y]==0&&visit[n1.x][n1.y]!=1){
-                    st.push(n1);
-                    visit[n1.x][n1.y]=1;
-                    tag=true;
-                }
-                if(n2.x<m&&n2.y<n&&map[n2.x][n2.y]==0&&visit[n2.x][n2.y]!=1&&tag==false){
-                    st.push(n2);
-                    visit[n2.x][n2.y]=1;
-                    tag=true;
-                }
-                if(tag==false){
-                    st.pop();
+            int[][] maze = new int[row][column];
+
+            for (int i = 0; i < row; i++) {
+                for (int j = 0; j < column; j++) {
+                    maze[i][j] = scanner.nextInt();
                 }
             }
-        }
 
-        while(queue.size()>0){
-            Node top = queue.pop();
-            System.out.println("("+top.x+","+top.y+")");
+            int[][] isVisited = new int[row][column];
+            int[][] move = {{1, 0}, {0, 1},{-1, 0}, {0, -1}};
+            int startX = 0;
+            int startY = 0;
+            Node startNode = new Node(0, 0);
+            Node endNode = new Node(row-1,column-1);
+
+            Stack<Node> stack = new Stack<Node>();
+            List<List<Node>> path = new ArrayList<List<Node>>();
+            List<Node> bestPath = new ArrayList<>();
+
+            isVisited[0][0] = 1;
+
+            stack.push(startNode);
+
+            while (!stack.empty()){
+                Node now = stack.peek();
+                boolean flag = false;
+
+                if(now.x == endNode.x && now.y == endNode.y){
+                    path.add(stack);
+                    break;
+                } else {
+                    for (int i = 0; i < 4; i++) {
+                        Node newNode = new Node(now.x+move[i][0], now.y+move[i][1]);
+
+                        if(newNode.x >= 0 && newNode.x < row && newNode.y >= 0 && newNode.y < column && isVisited[newNode.x][newNode.y] == 0 && maze[newNode.x][newNode.y] == 0){
+                            stack.push(newNode);
+                            isVisited[newNode.x][newNode.y] = 1;
+                            flag = true;
+                            break;
+                        }
+                    }
+                    if(flag) continue;
+                    stack.pop();
+                }
+            }
+
+            int minPath = 10000;
+            for (List<Node> list : path
+                 ) {
+                if(list.size() < minPath){
+                    bestPath = list;
+                    minPath = list.size();
+                }
+            }
+
+            for (Node node : bestPath
+                 ) {
+                System.out.println("("+node.x+","+node.y+")");
+            }
+
         }
 
     }
 
-    public static void main(String[] args){
-        Scanner sc = new Scanner(System.in);
-        while(sc.hasNext()){
-            int M = sc.nextInt();
-            int N = sc.nextInt();
-            int map[][] = new int[M][N];
-            for(int i=0;i<M;i++){
-                for(int j=0;j<N;j++){
-                    map[i][j] = sc.nextInt();
-                }
-            }
-            fun(map,M,N);
-        }
-    }
+}
 
-    public static class Node{
-        int x;
-        int y;
-        Node(int x,int y){
-            this.x=x;
-            this.y=y;
-        }
+class Node{
+    int x;
+    int y;
+
+    Node(int x, int y){
+        this.x = x;
+        this.y = y;
     }
 }
