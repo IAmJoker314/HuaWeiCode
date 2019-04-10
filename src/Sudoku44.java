@@ -19,6 +19,7 @@ public class Sudoku44 {
 
             backTrace(new SudokuNode(0, 0), sudokuArray);
 
+
         }
 
     }

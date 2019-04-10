@@ -1,75 +1,47 @@
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
 public class InputAndOutput {
-    public static int nextInt = 0;
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        String tempStr;
-        while ((tempStr = scanner.nextLine()) != null){
-            int num = 0;
-            if(!tempStr.contains(",")){
-                if(nextInt == 0){
-                    num = Integer.parseInt(tempStr);
+        ArrayList<String> list = new ArrayList<>();
+        ArrayList<String> result = new ArrayList<>();
+        Scanner scanner= new Scanner(System.in);
+        int len = scanner.nextInt();
+        int index = 0;
+        int maxx = 0;
+        while(scanner.hasNext()){
+            String s = scanner.next();
+            if(s.equals("over")) break;
+            String[] array = s.split(",");
+            int len1 = array.length;
+            if(maxx<len1)
+                maxx=len1;
+            list.add(s);
+        }
+
+        while(index < maxx){
+            for(int i=0;i<list.size();i++){
+                String str = list.get(i);
+                String[] array = str.split(",");
+                int maxLen=array.length;
+                int endLen=index+len;
+                if(maxLen < endLen)
+                    endLen = maxLen;
+                for(int j=index;j<endLen;j++){
+                    String out=array[j];
+                    result.add(out);
+                    result.add(",");
+                    //System.out.print(out);
+                    //if(j != maxx-1)
+                    //System.out.print(",");
                 }
-            } else {
-                num = nextInt;
             }
+            index += len;
+        }
+        int rlen = result.size();
+        result.remove(rlen-1);
+        for(String a:result)
+            System.out.print(a);
 
-                String inputStr;
-                List<String> strList = new ArrayList<>();
-                List<List<String>> charList = new ArrayList<>();
-                StringBuilder sb = new StringBuilder();
-
-                if((inputStr = scanner.nextLine()).contains(",")){
-                    strList.add(inputStr);
-                    while ((inputStr = scanner.nextLine()).contains(",")){
-                        strList.add(inputStr);
-                    }
-                } else {
-                    nextInt = Integer.parseInt(inputStr);
-                }
-
-
-                for (int i = 0; i < strList.size(); i++) {
-                    List<String> tempStrList = new ArrayList<>(Arrays.asList(strList.get(i).split(","))) ;
-                    charList.add(tempStrList);
-                }
-
-                int flag = 0;
-
-                while (flag < charList.size()){
-                    for (int i = 0; i < charList.size(); i++) {
-                        if(!charList.isEmpty()){
-                            if(charList.get(i).size()>= num){
-                                for (int j = 0; j < num; j++) {
-                                    sb.append(charList.get(i).get(j)+",");
-                                }
-
-                                int count = 0;
-                                while (count < num){
-                                    charList.get(i).remove(0);
-                                    count++;
-                                }
-
-                            } else {
-                                for (int j = 0; j < charList.get(i).size(); j++) {
-                                    sb.append(charList.get(i).get(j)+",");
-                                }
-
-                                charList.get(i).removeAll(charList.get(i));
-                                flag++;
-                            }
-
-                        }
-                    }
-
-                }
-
-                String output = sb.toString();
-                System.out.println(output.substring(0, output.length()-1));
-            }
     }
 }
